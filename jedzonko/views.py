@@ -10,7 +10,9 @@ class IndexView(View):
         ctx = {"actual_date": datetime.now()}
         return render(request, "test.html", ctx)
 
-
-# Example text
+# szymon :)
+# test
+# Example
 
 # First view - MS
+

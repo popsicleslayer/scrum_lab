@@ -12,3 +12,5 @@ class IndexView(View):
 
 
 # Example text
+
+# First view - MS

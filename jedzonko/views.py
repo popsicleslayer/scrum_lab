@@ -11,6 +11,13 @@ class IndexView(View):
         ctx = {"actual_date": datetime.now()}
         return render(request, "test.html", ctx)
 
+# szymon :)
+# test
+# Example
+
+# First view - MS
+
 
 def index_site(request):
     return render(request,"index.html")
+

@@ -3,10 +3,6 @@ import os
 import sys
 
 if __name__ == '__main__':
-
-# nowy komenatrz
-
-if
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scrumlab.settings')
     try:
         from django.core.management import execute_from_command_line

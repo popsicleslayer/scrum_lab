@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.http import HttpResponse
 
 from django.shortcuts import render
 from django.views import View
@@ -15,4 +16,8 @@ class IndexView(View):
 # Example
 
 # First view - MS
+
+
+def index_site(request):
+    return render(request,"index.html")
 

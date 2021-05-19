@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import path
 from jedzonko.views import index_site
 
-from jedzonko.views import IndexView
+from jedzonko.views import IndexView, RecipeListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', IndexView.as_view()),
     path('', index_site),
+    path('recipe/list/', RecipeListView.as_view(), name='recipe-list'),
 ]

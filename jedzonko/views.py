@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.http import HttpResponse
-
 from django.shortcuts import render
 from django.views import View
 
@@ -17,6 +16,10 @@ class RecipeListView(View):
     def get(self, request):
         return render(request, "app-recipes.html")
 
-      
+    
 def index_site(request):
-    return render(request,"index.html")
+    return render(request, "index.html")
+
+
+def dashboard(request):
+    return render(request, "dashboard.html")

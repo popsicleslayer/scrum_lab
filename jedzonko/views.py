@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from jedzonko.models import Recipe, Plan
 
 
 class IndexView(View):
@@ -21,5 +22,11 @@ def index_site(request):
     return render(request, "index.html")
 
 
-def dashboard(request):
-    return render(request, "dashboard.html")
+class DashboardView(View):
+
+    def get(self, request, *args, **kwargs):
+        plans = Plan.objects.count()
+        ctx = {
+            'plans': plans,
+        }
+        return render(request, "dashboard.html", context=ctx)

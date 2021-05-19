@@ -11,6 +11,12 @@ class IndexView(View):
         return render(request, "test.html", ctx)
 
 
+class RecipeListView(View):
+
+    def get(self, request):
+        return render(request, "app-recipes.html")
+
+    
 def index_site(request):
     return render(request, "index.html")
 

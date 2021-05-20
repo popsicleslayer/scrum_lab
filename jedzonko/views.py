@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from jedzonko.models import Recipe, Plan
 
 from jedzonko.models import *
 
@@ -21,6 +22,7 @@ class RecipeListView(View):
     
 def index_site(request):
     return render(request, "index.html")
+
 
 
 def dashboard(request):
@@ -60,3 +62,13 @@ class PlanAddReceipeView(View):
 class PlanListView(View):
     def get(self,request):
         return HttpResponse("Tutaj będzie lista wszystkich planów")
+
+class DashboardView(View):
+
+    def get(self, request, *args, **kwargs):
+        plans = Plan.objects.count()
+        ctx = {
+            'plans': plans,
+        }
+        return render(request, "dashboard.html", context=ctx)
+

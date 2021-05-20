@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from jedzonko.models import Recipe
 
 
 class IndexView(View):
@@ -14,7 +15,11 @@ class IndexView(View):
 class RecipeListView(View):
 
     def get(self, request):
-        return render(request, "app-recipes.html")
+        recipes = Recipe.objects.all().order_by('-votes', '-created')
+        ctx = {
+            'recipes': recipes,
+        }
+        return render(request, "app-recipes.html", context=ctx)
 
     
 def index_site(request):

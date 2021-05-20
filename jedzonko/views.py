@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.generic import ListView
 from jedzonko.models import Recipe
 
 
@@ -12,14 +13,15 @@ class IndexView(View):
         return render(request, "test.html", ctx)
 
 
-class RecipeListView(View):
+class RecipeListView(ListView):
 
-    def get(self, request):
-        recipes = Recipe.objects.all().order_by('-votes', '-created')
-        ctx = {
-            'recipes': recipes,
-        }
-        return render(request, "app-recipes.html", context=ctx)
+    model = Recipe
+    template_name = 'app-recipes.html'
+    context_object_name = 'recipes'
+    paginate_by = 50
+
+    def get_queryset(self, *args, **kwargs):
+        return Recipe.objects.all().order_by('-votes', '-created')
 
     
 def index_site(request):

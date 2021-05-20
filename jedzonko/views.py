@@ -2,7 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from jedzonko.models import Recipe, Plan
+from jedzonko.models import Recipe
 
 from jedzonko.models import *
 

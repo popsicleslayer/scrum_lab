@@ -48,7 +48,7 @@ class ReceipeAddView(View):
         return render(request, "app-add-recipe.html")
 
 class RecipeModifyView(View):
-    def get(self, reqest, id):
+    def get(self, request, id):
         return HttpResponse(f"Działa id:{id}")
 
 class PlanIdView(View):

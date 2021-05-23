@@ -1,9 +1,9 @@
+import random
 from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from jedzonko.models import Recipe
-
 from jedzonko.models import *
 
 
@@ -21,7 +21,11 @@ class RecipeListView(View):
 
     
 def index_site(request):
-    return render(request, "index.html")
+    recipes = Recipe.objects.all()
+    list_recipes = list(recipes)
+    random.shuffle(list_recipes)
+    random_3_recipes = list_recipes[:3]
+    return render(request, template_name="index.html", context={'random_3_recipes': random_3_recipes})
 
 
 

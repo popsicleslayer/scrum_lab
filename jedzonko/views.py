@@ -68,9 +68,17 @@ class PlanAddReceipeView(View):
     def get(self, request):
         return HttpResponse("Dodajmy nowy przepis do planu")
 
-class PlanListView(View):
-    def get(self,request):
-        return HttpResponse("Tutaj będzie lista wszystkich planów")
+
+class PlanListView(ListView):
+
+    model = Plan
+    template_name = 'app-schedules.html'
+    context_object_name = 'plans'
+    paginate_by = 50
+
+    def get_queryset(self, *args, **kwargs):
+        return Plan.objects.all().order_by('name')
+
 
 class DashboardView(View):
 

@@ -71,8 +71,10 @@ class DashboardView(View):
 
     def get(self, request, *args, **kwargs):
         plans = Plan.objects.count()
+        recipes = Recipe.objects.count()
         ctx = {
             'plans': plans,
+            'recipes': recipes,
         }
         return render(request, "dashboard.html", context=ctx)
 

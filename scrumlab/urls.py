@@ -30,6 +30,6 @@ urlpatterns = [
     path('recipe/<int:id>/', RecipeDetails.as_view()),
     path('plan/<int:id>', PlanIdView.as_view(), name='plan-id'),
     path('plan/add/', PlanAddView.as_view(), name='plan-add'),
-    path('plan/add-recipe/', PlanAddReceipeView.as_view(), name='plan-add-receipe'),
+    path('plan/add-recipe/', PlanAddReceipeView.as_view(), name='plan-add-recipe'),
     path('plan/list/', PlanListView.as_view(), name='plan-list'),
 ]

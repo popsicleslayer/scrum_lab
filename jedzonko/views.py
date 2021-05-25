@@ -72,3 +72,20 @@ class DashboardView(View):
         }
         return render(request, "dashboard.html", context=ctx)
 
+class ReceipeIdView(View):
+    def get(self,request,id):
+        recipe = Recipe.objects.get(id=id)
+        return render(request, 'recipe-id-vote.html',context = {'id':recipe})
+
+    def post(self,request,id):
+        recipe_id = request.POST.get('recipe_id')
+        recipe = Recipe.objects.get(id=recipe_id)
+        nr_voices = recipe.votes
+        new_nr_voices = nr_voices + 1
+        recipe.votes = new_nr_voices
+        recipe.votes.save()
+
+        nrv = recipe.votes
+
+        return  HttpResponse(nrv)
+

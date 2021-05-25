@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 from jedzonko.models import Recipe
@@ -78,14 +78,13 @@ class ReceipeIdView(View):
         return render(request, 'recipe-id-vote.html',context = {'id':recipe})
 
     def post(self,request,id):
-        recipe_id = request.POST.get('recipe_id')
-        recipe = Recipe.objects.get(id=recipe_id)
+
+        recipe = Recipe.objects.get(id=id)
         nr_voices = recipe.votes
         new_nr_voices = nr_voices + 1
         recipe.votes = new_nr_voices
-        recipe.votes.save()
+        recipe.save()
 
-        nrv = recipe.votes
+        return HttpResponseRedirect(f'/recipe/{id}')
 
-        return  HttpResponse(nrv)
 

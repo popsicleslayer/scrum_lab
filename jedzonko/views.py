@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView
 from jedzonko.models import *
@@ -37,21 +37,25 @@ def dashboard(request):
     return render(request, "dashboard.html")
 
 
-class ReceipeAddView(View):
+
+class RecipeAddView(View):
+
     def get(self, request):
         return render(request, 'app-add-recipe.html')
 
     def post(self, request):
-        recipe_name = request.POST.get('receipe_name')
-        recipe_description = request.POST.get('receipe_description')
-        time_of_preparing = request.POST.get('time_of_preparing')
-        way_of_preparing = request.POST.get('way_of_preparing')
+        name = request.POST.get('recipe_name')
         ingredients = request.POST.get('ingredients')
-
-        Recipe.objects.create(name=recipe_name, description=recipe_description, preparation_time=time_of_preparing,
-                              ingredients=ingredients)
-
-        return render(request, "app-add-recipe.html")
+        description = request.POST.get('recipe_description')
+        preparation_time = request.POST.get('time_of_preparing')
+        way_of_preparing = request.POST.get('way_of_preparing')
+        if all([name, ingredients, description, preparation_time, way_of_preparing]):
+            Recipe.objects.create(name=name, ingredients=ingredients, description=description,
+                                  preparation_time=preparation_time, way_of_preparing=way_of_preparing)
+            return redirect('/recipe/list/')
+        else:
+            message = "Wypełnij poprawnie wszystkie pola."
+        return render(request, "app-add-recipe.html", {"message": message})
 
 
 class RecipeModifyView(View):

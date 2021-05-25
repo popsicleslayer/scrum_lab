@@ -24,7 +24,7 @@ class RecipeListView(ListView):
     def get_queryset(self, *args, **kwargs):
         return Recipe.objects.all().order_by('-votes', '-created')
 
-    
+
 def index_site(request):
     recipes = Recipe.objects.all()
     list_recipes = list(recipes)
@@ -33,40 +33,46 @@ def index_site(request):
     return render(request, template_name="index.html", context={'random_3_recipes': random_3_recipes})
 
 
-
 def dashboard(request):
     return render(request, "dashboard.html")
 
+
 class ReceipeAddView(View):
-    def get(self,request):
+    def get(self, request):
         return render(request, 'app-add-recipe.html')
 
-    def post(self,request):
+    def post(self, request):
         recipe_name = request.POST.get('receipe_name')
         recipe_description = request.POST.get('receipe_description')
         time_of_preparing = request.POST.get('time_of_preparing')
         way_of_preparing = request.POST.get('way_of_preparing')
         ingredients = request.POST.get('ingredients')
 
-        Recipe.objects.create(name=recipe_name, description = recipe_description,preparation_time= time_of_preparing, ingredients= ingredients )
+        Recipe.objects.create(name=recipe_name, description=recipe_description, preparation_time=time_of_preparing,
+                              ingredients=ingredients)
 
         return render(request, "app-add-recipe.html")
+
 
 class RecipeModifyView(View):
     def get(self, reqest, id):
         return HttpResponse(f"Działa id:{id}")
 
+
 class PlanIdView(View):
     def get(self, request, id):
         return HttpResponse(f"Działa id: {id}")
 
+
 class PlanAddView(View):
-    def get(self,request):
+    def get(self, request):
         return HttpResponse("Dodajmy nowy plan")
+
 
 class PlanAddReceipeView(View):
     def get(self, request):
         return HttpResponse("Dodajmy nowy przepis do planu")
+
 
 
 class PlanListView(ListView):
@@ -78,6 +84,7 @@ class PlanListView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         return Plan.objects.all().order_by('name')
+      
 
 
 class DashboardView(View):
@@ -91,3 +98,13 @@ class DashboardView(View):
         }
         return render(request, "dashboard.html", context=ctx)
 
+
+class RecipeDetails(View):
+    def get(self, request, id):
+        recipe = Recipe.objects.get(id=id)
+        ingredients = recipe.ingredients.split(sep=', ')
+        ctx = {
+            'recipe': recipe,
+            'ingredients': ingredients,
+        }
+        return render(request, template_name='app-recipe-details.html', context=ctx)

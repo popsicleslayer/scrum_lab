@@ -3,7 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from jedzonko.models import Recipe
+from django.views.generic import ListView
 from jedzonko.models import *
 
 
@@ -14,12 +14,17 @@ class IndexView(View):
         return render(request, "test.html", ctx)
 
 
-class RecipeListView(View):
+class RecipeListView(ListView):
 
-    def get(self, request):
-        return render(request, "app-recipes.html")
+    model = Recipe
+    template_name = 'app-recipes.html'
+    context_object_name = 'recipes'
+    paginate_by = 50
 
-    
+    def get_queryset(self, *args, **kwargs):
+        return Recipe.objects.all().order_by('-votes', '-created')
+
+
 def index_site(request):
     recipes = Recipe.objects.all()
     list_recipes = list(recipes)
@@ -28,12 +33,13 @@ def index_site(request):
     return render(request, template_name="index.html", context={'random_3_recipes': random_3_recipes})
 
 
-
 def dashboard(request):
     return render(request, "dashboard.html")
 
 
+
 class RecipeAddView(View):
+
     def get(self, request):
         return render(request, 'app-add-recipe.html')
 
@@ -56,28 +62,53 @@ class RecipeModifyView(View):
     def get(self, reqest, id):
         return HttpResponse(f"Działa id:{id}")
 
+
 class PlanIdView(View):
     def get(self, request, id):
         return HttpResponse(f"Działa id: {id}")
 
+
 class PlanAddView(View):
-    def get(self,request):
+    def get(self, request):
         return HttpResponse("Dodajmy nowy plan")
+
 
 class PlanAddReceipeView(View):
     def get(self, request):
         return HttpResponse("Dodajmy nowy przepis do planu")
 
-class PlanListView(View):
-    def get(self,request):
-        return HttpResponse("Tutaj będzie lista wszystkich planów")
+
+
+class PlanListView(ListView):
+
+    model = Plan
+    template_name = 'app-schedules.html'
+    context_object_name = 'plans'
+    paginate_by = 50
+
+    def get_queryset(self, *args, **kwargs):
+        return Plan.objects.all().order_by('name')
+      
+
 
 class DashboardView(View):
 
     def get(self, request, *args, **kwargs):
         plans = Plan.objects.count()
+        recipes = Recipe.objects.count()
         ctx = {
             'plans': plans,
+            'recipes': recipes,
         }
         return render(request, "dashboard.html", context=ctx)
 
+
+class RecipeDetails(View):
+    def get(self, request, id):
+        recipe = Recipe.objects.get(id=id)
+        ingredients = recipe.ingredients.split(sep=', ')
+        ctx = {
+            'recipe': recipe,
+            'ingredients': ingredients,
+        }
+        return render(request, template_name='app-recipe-details.html', context=ctx)

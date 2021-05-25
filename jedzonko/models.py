@@ -12,6 +12,7 @@ class Recipe(models.Model):
     preparation_time = models.PositiveSmallIntegerField()
     way_of_preparing = models.TextField()
     votes = models.SmallIntegerField(default=0)
+    preparation = models.TextField(max_length=2048)
 
 
 class Plan(models.Model):

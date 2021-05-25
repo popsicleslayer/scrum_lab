@@ -42,9 +42,10 @@ class RecipeAddView(View):
         ingredients = request.POST.get('ingredients')
         description = request.POST.get('recipe_description')
         preparation_time = request.POST.get('time_of_preparing')
-        if all([name, ingredients, description, preparation_time]):
+        way_of_preparing = request.POST.get('way_of_preparing')
+        if all([name, ingredients, description, preparation_time, way_of_preparing]):
             Recipe.objects.create(name=name, ingredients=ingredients, description=description,
-                                  preparation_time=preparation_time)
+                                  preparation_time=preparation_time, way_of_preparing=way_of_preparing)
             return redirect('/recipe/list/')
         else:
             message = "Wypełnij poprawnie wszystkie pola."

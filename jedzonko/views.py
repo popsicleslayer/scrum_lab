@@ -3,7 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from jedzonko.models import Recipe
+from django.views.generic import ListView
 from jedzonko.models import *
 
 
@@ -14,10 +14,15 @@ class IndexView(View):
         return render(request, "test.html", ctx)
 
 
-class RecipeListView(View):
+class RecipeListView(ListView):
 
-    def get(self, request):
-        return render(request, "app-recipes.html")
+    model = Recipe
+    template_name = 'app-recipes.html'
+    context_object_name = 'recipes'
+    paginate_by = 50
+
+    def get_queryset(self, *args, **kwargs):
+        return Recipe.objects.all().order_by('-votes', '-created')
 
 
 def index_site(request):
@@ -69,9 +74,17 @@ class PlanAddReceipeView(View):
         return HttpResponse("Dodajmy nowy przepis do planu")
 
 
-class PlanListView(View):
-    def get(self, request):
-        return HttpResponse("Tutaj będzie lista wszystkich planów")
+
+class PlanListView(ListView):
+
+    model = Plan
+    template_name = 'app-schedules.html'
+    context_object_name = 'plans'
+    paginate_by = 50
+
+    def get_queryset(self, *args, **kwargs):
+        return Plan.objects.all().order_by('name')
+      
 
 
 class DashboardView(View):

@@ -75,8 +75,15 @@ class PlanAddView(View):
 
 class PlanAddReceipeView(View):
     def get(self, request):
-        return HttpResponse("Dodajmy nowy przepis do planu")
-
+        plans = Plan.objects.all()
+        recipes = Recipe.objects.all()
+        # days = DayName.objects.all()
+        ctx = {
+            'plans': plans,
+            'recipes': recipes,
+            # 'days': days,
+        }
+        return render(request, template_name='app-schedules-meal-recipe.html', context=ctx)
 
 
 class PlanListView(ListView):

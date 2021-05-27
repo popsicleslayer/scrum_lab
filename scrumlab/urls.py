@@ -24,4 +24,10 @@ urlpatterns = [
     path('', index_site),
     path('main/', dashboard),
     path('recipe/list/', RecipeListView.as_view(), name='recipe-list'),
+
+
+
+
+
+
 ]

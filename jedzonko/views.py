@@ -43,8 +43,12 @@ class RecipeAddView(View):
     def get(self, request):
         return render(request, 'app-add-recipe.html')
 
-    def post(self, request):
-        name = request.POST.get('recipe_name')
+
+    def post(self,request):
+        recipe_name = request.POST.get('recipe_name')
+        recipe_description = request.POST.get('recipe_description')
+        time_of_preparing = request.POST.get('time_of_preparing')
+        way_of_preparing = request.POST.get('way_of_preparing')
         ingredients = request.POST.get('ingredients')
         description = request.POST.get('recipe_description')
         preparation_time = request.POST.get('time_of_preparing')
@@ -69,8 +73,13 @@ class PlanIdView(View):
 
 
 class PlanAddView(View):
-    def get(self, request):
-        return HttpResponse("Dodajmy nowy plan")
+
+    def get(self,request):
+        return render(request, 'app-add-schedules.html')
+    def post(self, request):
+        planName = request.POST.get('planName')
+        planDescription = request.POST.get('planDescription')
+        return HttpResponse(f'{planName}, {planDescription}')
 
 
 class PlanAddReceipeView(View):

@@ -4,7 +4,7 @@
 
 {% block content %}
 <form aciton ="/recipe/add/" method="post">
-    {% csrf_token %}
+{% csrf_token %}
 <div class="dashboard-content border-dashed p-3 m-4 view-height">
     {% if message %}
         {{ message }}

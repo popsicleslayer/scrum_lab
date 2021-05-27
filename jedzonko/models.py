@@ -27,6 +27,6 @@ class Dayname(models.Model):
 class RecipePlan(models.Model):
     meal_name = models.CharField(max_length=255)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    plan = models.ForeignKey(Plan, models.CASCADE)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     order = models.IntegerField(default=0, unique=True)
     day_name = models.ManyToManyField(Dayname)

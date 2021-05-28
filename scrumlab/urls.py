@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from jedzonko.views import (index_site, DashboardView, IndexView, RecipeListView, RecipeAddView, RecipeModifyView,
                             PlanIdView, PlanAddView, PlanAddReceipeView, PlanListView, RecipeDetails)
 

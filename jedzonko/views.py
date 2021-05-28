@@ -1,7 +1,8 @@
 import random
 from datetime import datetime
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from jedzonko.models import *
@@ -89,12 +90,6 @@ class RecipeModifyView(View):
     def get(self,request,id):
         return HttpResponse(f"Działa id:{id}")
 
-class RecipeDetails(View):
-    def get(self,request, id):
-        return render(request, app-recipe-details.html)
-
-
-
 class PlanAddReceipeView(View):
     def get(self, request):
         return HttpResponse("Dodajmy nowy przepis do planu")
@@ -134,3 +129,19 @@ class RecipeDetails(View):
             'ingredients': ingredients,
         }
         return render(request, template_name='app-recipe-details.html', context=ctx)
+
+class ReceipeIdView(View):
+    def get(self,request,id):
+        recipe = Recipe.objects.get(id=id)
+        return render(request, 'recipe-id-vote.html',context = {'id':recipe})
+
+    def post(self,request,id):
+
+        recipe = Recipe.objects.get(id=id)
+        nr_voices = recipe.votes
+        new_nr_voices = nr_voices + 1
+        recipe.votes = new_nr_voices
+        recipe.save()
+
+        return HttpResponseRedirect(f'/recipe/{id}')
+

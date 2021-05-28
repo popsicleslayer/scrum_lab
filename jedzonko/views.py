@@ -86,13 +86,26 @@ class PlanAddReceipeView(View):
     def get(self, request):
         plans = Plan.objects.all()
         recipes = Recipe.objects.all()
-        # days = DayName.objects.all()
+        days = Dayname.objects.all()
         ctx = {
             'plans': plans,
             'recipes': recipes,
-            # 'days': days,
+            'days': days,
         }
         return render(request, template_name='app-schedules-meal-recipe.html', context=ctx)
+    def post(self, request, *args, **kwargs):
+        plan_id = request.POST.get('choosePlan')
+        recipe_id = request.POST.get('recipie')
+        day_name_id = request.POST.get('day')
+        order = request.POST.get('number')
+        meal_name = request.POST.get('name')
+        if all([plan_id, recipe_id, day_name_id, order, meal_name]):
+            RecipePlan.objects.create(meal_name=meal_name, order=order,
+                                     day_name_id=day_name_id, recipe_id=recipe_id, plan_id=plan_id)
+            return redirect(f'/plan/{plan_id}')
+        else:
+            message = 'Proszę wypełnić wszystkie pola'
+        return render(request, template_name='app-schedules-meal-recipe.html', context={'message': message})
 
 
 class PlanListView(ListView):

@@ -12,6 +12,7 @@
     </div>
 
     <div class="schedules-content">
+    {{ message }}
         <form action="/plan/add-recipe/" method="post">
             <div class="form-group row">
                 <label for="choosePlan"
@@ -62,13 +63,9 @@
                 </label>
                 <div class="col-sm-2">
                     <select class="form-control" id="day">
-{#                        {% for day in days %}#}
-{#                        <option value="{{ day.id }}">{{ day.day_name }}</option>#}
-{#                        {% endfor %}#}
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                        {% for day in days %}
+                        <option value="{{ day.id }}">{{ day.day_name }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>

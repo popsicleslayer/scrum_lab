@@ -33,11 +33,6 @@ def index_site(request):
     return render(request, template_name="index.html", context={'random_3_recipes': random_3_recipes})
 
 
-def dashboard(request):
-    return render(request, "dashboard.html")
-
-
-
 class RecipeAddView(View):
 
     def get(self, request):
@@ -80,6 +75,24 @@ class PlanAddView(View):
         planName = request.POST.get('planName')
         planDescription = request.POST.get('planDescription')
         return HttpResponse(f'{planName}, {planDescription}')
+
+
+class RecipeListView(View):
+    def get(self,request):
+        return render(request, 'app-recipes.html')
+
+class RecipeAddView(View):
+    def get(self,request):
+        return render(request, 'app-add-recipe.html')
+
+class RecipeModifyView(View):
+    def get(self,request,id):
+        return HttpResponse(f"Działa id:{id}")
+
+class RecipeDetails(View):
+    def get(self,request, id):
+        return render(request, app-recipe-details.html)
+
 
 
 class PlanAddReceipeView(View):

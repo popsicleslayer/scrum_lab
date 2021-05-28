@@ -1,5 +1,5 @@
 from django.db import models
-
+import re
 
 # Create your models here.
 
@@ -27,5 +27,7 @@ class Page(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = self.title.replace(" ", "_").lower()
+            title = str(self.title)
+            title_normalized = re.sub('[łóąęńśżźć]', '', title)
+            self.slug = title_normalized.replace(" ", "-").lower()
         super().save(*args, **kwargs)

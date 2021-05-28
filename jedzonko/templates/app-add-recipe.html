@@ -4,9 +4,11 @@
 
 {% block content %}
 <form aciton ="/recipe/add/" method="post">
-    {% csrf_token %}
+{% csrf_token %}
 <div class="dashboard-content border-dashed p-3 m-4 view-height">
-
+    {% if message %}
+        {{ message }}
+    {% endif %}
     <div class="mt-4 ml-4 mr-4">
         <div class="row border-bottom border-3">
             <div class="col"><h3 class="color-header text-uppercase">Nowy

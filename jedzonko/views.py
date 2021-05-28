@@ -85,8 +85,8 @@ class PlanAddView(View):
         else:
             return HttpResponse("Wprowadzono niepełne dane")
 
-        return redirect(f'plan/{new.id}/details')
-
+        response = redirect(f'/plan/{new.id}/details')
+        return response
 
 class PlanAddReceipeView(View):
     def get(self, request):

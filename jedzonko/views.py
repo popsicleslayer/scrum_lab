@@ -139,9 +139,16 @@ class ReceipeIdView(View):
 
         recipe = Recipe.objects.get(id=id)
         nr_voices = recipe.votes
-        new_nr_voices = nr_voices + 1
-        recipe.votes = new_nr_voices
-        recipe.save()
+
+        if 'like' in request.POST:
+            new_nr_voices = nr_voices + 1
+            recipe.votes = new_nr_voices
+            recipe.save()
+        elif 'dislike':
+            new_nr_voices = nr_voices - 1
+            recipe.votes = new_nr_voices
+            recipe.save()
 
         return HttpResponseRedirect(f'/recipe/{id}')
+
 

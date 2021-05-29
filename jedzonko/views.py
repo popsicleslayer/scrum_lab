@@ -136,6 +136,10 @@ class RecipeModifyView(View):
         description = request.POST.get('description')
         preparation_time = request.POST.get('preparation_time')
         way_of_preparing = request.POST.get('way_of_preparing')
-        recipe.update(name=name, ingredients=ingredients, description=description,
-                      preparation_time=preparation_time, way_of_preparing=way_of_preparing)
-        return render(request, "app-edit-recipe.html")
+        if all([name, ingredients, description, preparation_time, way_of_preparing]):
+            recipe.update(name=name, ingredients=ingredients, description=description,
+                          preparation_time=preparation_time, way_of_preparing=way_of_preparing)
+            return redirect('/recipe/list/')
+        else:
+            message = "Wypełnij poprawnie wszystkie pola."
+        return render(request, "app-edit-recipe.html", {"message": message})

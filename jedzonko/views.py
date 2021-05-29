@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView
 from jedzonko.models import *
@@ -37,7 +37,6 @@ def dashboard(request):
     return render(request, "dashboard.html")
 
 
-
 class RecipeAddView(View):
 
     def get(self, request):
@@ -45,13 +44,10 @@ class RecipeAddView(View):
 
 
     def post(self,request):
-        recipe_name = request.POST.get('recipe_name')
-        recipe_description = request.POST.get('recipe_description')
-        time_of_preparing = request.POST.get('time_of_preparing')
-        way_of_preparing = request.POST.get('way_of_preparing')
+        name = request.POST.get('recipe_name')
         ingredients = request.POST.get('ingredients')
         description = request.POST.get('recipe_description')
-        preparation_time = request.POST.get('time_of_preparing')
+        preparation_time = request.POST.get('preparation_time')
         way_of_preparing = request.POST.get('way_of_preparing')
         if all([name, ingredients, description, preparation_time, way_of_preparing]):
             Recipe.objects.create(name=name, ingredients=ingredients, description=description,
@@ -60,11 +56,6 @@ class RecipeAddView(View):
         else:
             message = "Wypełnij poprawnie wszystkie pola."
         return render(request, "app-add-recipe.html", {"message": message})
-
-
-class RecipeModifyView(View):
-    def get(self, reqest, id):
-        return HttpResponse(f"Działa id:{id}")
 
 
 class PlanIdView(View):
@@ -121,3 +112,30 @@ class RecipeDetails(View):
             'ingredients': ingredients,
         }
         return render(request, template_name='app-recipe-details.html', context=ctx)
+
+
+class RecipeModifyView(View):
+    def get(self, request, id):
+        recipe = get_object_or_404(Recipe, pk=id)
+        name = recipe.name
+        ingredients = recipe.ingredients
+        description = recipe.description
+        preparation_time = recipe.preparation_time
+        way_of_preparing = recipe.way_of_preparing
+        ctx = {"name": name,
+               "ingredients": ingredients,
+               "description": description,
+               "preparation_time": preparation_time,
+               "way_of_preparing": way_of_preparing}
+        return render(request, "app-edit-recipe.html", ctx)
+
+    def post(self, request, id):
+        recipe = Recipe.objects.filter(pk=id)
+        name = request.POST.get('name')
+        ingredients = request.POST.get('ingredients')
+        description = request.POST.get('description')
+        preparation_time = request.POST.get('preparation_time')
+        way_of_preparing = request.POST.get('way_of_preparing')
+        recipe.update(name=name, ingredients=ingredients, description=description,
+                      preparation_time=preparation_time, way_of_preparing=way_of_preparing)
+        return render(request, "app-edit-recipe.html")

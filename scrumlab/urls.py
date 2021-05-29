@@ -30,7 +30,7 @@ urlpatterns = [
     path('recipe/add/', RecipeAddView.as_view(), name='recipe-add'),
     path('recipe/modify/<int:id>', RecipeModifyView.as_view(), name='recipe-modify'),
     path('recipe/<int:id>/', RecipeDetails.as_view()),
-    path('plan/<int:id>', PlanIdView.as_view(), name='plan-id'),
+    path('plan/<int:id>/', PlanIdView.as_view(), name='plan-id'),
     path('plan/add/', PlanAddView.as_view(), name='plan-add'),
     path('plan/add-recipe/', PlanAddReceipeView.as_view(), name='plan-add-recipe'),
     path('plan/list/', PlanListView.as_view(), name='plan-list'),

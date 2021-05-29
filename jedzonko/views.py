@@ -65,7 +65,9 @@ class RecipeModifyView(View):
 
 class PlanIdView(View):
     def get(self, request, id):
-        return HttpResponse(f"Działa id: {id}")
+        plan = Plan.objects.get(pk=id)
+        recipePlan = RecipePlan.objects.filter(plan=plan.id)
+        return render(request,template_name='app-details-schedules.html', context={'plan': plan, 'recipePlan': recipePlan})
 
 
 class PlanAddView(View):

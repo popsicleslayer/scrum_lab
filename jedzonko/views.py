@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
 from django.views.generic import ListView
 from jedzonko.models import *
@@ -31,10 +31,6 @@ def index_site(request):
     random.shuffle(list_recipes)
     random_3_recipes = list_recipes[:3]
     return render(request, template_name="index.html", context={'random_3_recipes': random_3_recipes})
-
-
-def dashboard(request):
-    return render(request, "dashboard.html")
 
 
 class RecipeAddView(View):
@@ -72,6 +68,18 @@ class PlanAddView(View):
         planDescription = request.POST.get('planDescription')
         return HttpResponse(f'{planName}, {planDescription}')
 
+
+class RecipeListView(View):
+    def get(self,request):
+        return render(request, 'app-recipes.html')
+
+class RecipeAddView(View):
+    def get(self,request):
+        return render(request, 'app-add-recipe.html')
+
+class RecipeModifyView(View):
+    def get(self,request,id):
+        return HttpResponse(f"Działa id:{id}")
 
 class PlanAddReceipeView(View):
     def get(self, request):
@@ -143,3 +151,19 @@ class RecipeModifyView(View):
         else:
             message = "Wypełnij poprawnie wszystkie pola."
         return render(request, "app-edit-recipe.html", {"message": message})
+
+      
+class ReceipeIdView(View):
+    def get(self,request,id):
+        recipe = Recipe.objects.get(id=id)
+        return render(request, 'recipe-id-vote.html',context = {'id':recipe})
+
+    def post(self,request,id):
+
+        recipe = Recipe.objects.get(id=id)
+        nr_voices = recipe.votes
+        new_nr_voices = nr_voices + 1
+        recipe.votes = new_nr_voices
+        recipe.save()
+
+        return HttpResponseRedirect(f'/recipe/{id}')

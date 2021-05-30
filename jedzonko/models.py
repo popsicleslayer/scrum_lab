@@ -12,7 +12,6 @@ class Recipe(models.Model):
     votes = models.SmallIntegerField(default=0, null=True)
 
 
-
 class Plan(models.Model):
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=2048)

@@ -149,7 +149,7 @@ class RecipeDetails(View):
         }
         return render(request, template_name='app-recipe-details.html', context=ctx)
 
-      
+
 class RecipeModifyView(View):
     def get(self, request, id):
         recipe = get_object_or_404(Recipe, pk=id)
@@ -181,6 +181,7 @@ class RecipeModifyView(View):
             message = "Wypełnij poprawnie wszystkie pola."
         return render(request, "app-edit-recipe.html", {"message": message})
 
+
 class ReceipeIdView(View):
     def get(self,request,id):
         recipe = Recipe.objects.get(id=id)
@@ -190,7 +191,6 @@ class ReceipeIdView(View):
 
         recipe = Recipe.objects.get(id=id)
         nr_voices = recipe.votes
-
         if 'like' in request.POST:
             new_nr_voices = nr_voices + 1
             recipe.votes = new_nr_voices
@@ -199,5 +199,4 @@ class ReceipeIdView(View):
             new_nr_voices = nr_voices - 1
             recipe.votes = new_nr_voices
             recipe.save()
-
         return HttpResponseRedirect(f'/recipe/{id}')

@@ -75,8 +75,14 @@ class PlanAddView(View):
     def post(self, request):
         planName = request.POST.get('planName')
         planDescription = request.POST.get('planDescription')
-        return HttpResponse(f'{planName}, {planDescription}')
+        if all([planName, planDescription]):
+            new = Plan.objects.create(name=planName, description=planDescription)
+            new.save()
+        else:
+            return HttpResponse("Wprowadzono niepełne dane")
 
+        response = redirect(f'/plan/{new.id}/details')
+        return response
 
 class PlanAddReceipeView(View):
     def get(self, request):

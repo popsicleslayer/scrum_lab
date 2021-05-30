@@ -66,25 +66,53 @@ class PlanAddView(View):
     def post(self, request):
         planName = request.POST.get('planName')
         planDescription = request.POST.get('planDescription')
-        return HttpResponse(f'{planName}, {planDescription}')
+        if all([planName, planDescription]):
+            new = Plan.objects.create(name=planName, description=planDescription)
+            new.save()
+        else:
+            return HttpResponse("Wprowadzono niepełne dane")
 
-
-class RecipeListView(View):
-    def get(self,request):
-        return render(request, 'app-recipes.html')
-
-class RecipeAddView(View):
-    def get(self,request):
-        return render(request, 'app-add-recipe.html')
-
-class RecipeModifyView(View):
-    def get(self,request,id):
-        return HttpResponse(f"Działa id:{id}")
+        response = redirect(f'/plan/{new.id}/details')
+        return response
 
 class PlanAddReceipeView(View):
     def get(self, request):
-        return HttpResponse("Dodajmy nowy przepis do planu")
+        plans = Plan.objects.all()
+        recipes = Recipe.objects.all()
+        days = Dayname.objects.all()
+        ctx = {
+            'plans': plans,
+            'recipes': recipes,
+            'days': days,
+        }
+        return render(request, template_name='app-schedules-meal-recipe.html', context=ctx)
 
+    def post(self, request, *args, **kwargs):
+        plan_id = request.POST.get('choose_plan')
+        recipe_id = request.POST.get('recipe')
+        day_name_id = request.POST.get('day_name')
+        order = request.POST.get('order')
+        meal_name = request.POST.get('meal_name')
+        recipe = Recipe.objects.get(pk=recipe_id)
+        plan = Plan.objects.get(pk=plan_id)
+        day_name = Dayname.objects.get(pk=day_name_id)
+        if all([plan_id, recipe_id, day_name_id, order, meal_name]):
+            object = RecipePlan.objects.create(meal_name=meal_name, order=order, recipe=recipe, plan=plan)
+            object.save()
+            object.day_name.add(day_name)
+            return redirect(f'/plan/{plan_id}')
+        else:
+            message = 'Proszę wypełnić wszystkie pola'
+            plans = Plan.objects.all()
+            recipes = Recipe.objects.all()
+            days = Dayname.objects.all()
+            ctx = {
+                'plans': plans,
+                'recipes': recipes,
+                'days': days,
+                'message': message,
+            }
+        return render(request, template_name='app-schedules-meal-recipe.html', context=ctx)
 
 
 class PlanListView(ListView):
@@ -131,6 +159,7 @@ class RecipeModifyView(View):
         preparation_time = recipe.preparation_time
         way_of_preparing = recipe.way_of_preparing
         ctx = {"name": name,
+               "recipe_id": id,
                "ingredients": ingredients,
                "description": description,
                "preparation_time": preparation_time,
@@ -152,7 +181,7 @@ class RecipeModifyView(View):
             message = "Wypełnij poprawnie wszystkie pola."
         return render(request, "app-edit-recipe.html", {"message": message})
 
-      
+
 class ReceipeIdView(View):
     def get(self,request,id):
         recipe = Recipe.objects.get(id=id)
@@ -162,8 +191,12 @@ class ReceipeIdView(View):
 
         recipe = Recipe.objects.get(id=id)
         nr_voices = recipe.votes
-        new_nr_voices = nr_voices + 1
-        recipe.votes = new_nr_voices
-        recipe.save()
-
+        if 'like' in request.POST:
+            new_nr_voices = nr_voices + 1
+            recipe.votes = new_nr_voices
+            recipe.save()
+        elif 'dislike':
+            new_nr_voices = nr_voices - 1
+            recipe.votes = new_nr_voices
+            recipe.save()
         return HttpResponseRedirect(f'/recipe/{id}')

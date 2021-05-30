@@ -170,12 +170,13 @@ class RecipeDetails(View):
 
 class ContactDetailsView(View):
     def get(self, request, *args, **kwargs):
-        contact_details = Page.objects.get(slug='contact')
-        if contact_details:
-            context = {'paragraph': contact_details.description}
-            return render(request, 'contact-details.html', context)
-        else:
-            return redirect('index-site#contact')
+        try:
+            contact_details = Page.objects.get(slug='contact')
+        except Page.DoesNotExist:
+            return redirect('/#contact')
+        context = {'paragraph': contact_details.description}
+        return render(request, 'contact-details.html', context)
+
 
 
 

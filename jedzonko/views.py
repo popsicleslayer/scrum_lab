@@ -123,6 +123,7 @@ class RecipeModifyView(View):
         preparation_time = recipe.preparation_time
         way_of_preparing = recipe.way_of_preparing
         ctx = {"name": name,
+               "recipe_id": id,
                "ingredients": ingredients,
                "description": description,
                "preparation_time": preparation_time,

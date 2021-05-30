@@ -130,11 +130,6 @@ class RecipeDetails(View):
         }
         return render(request, template_name='app-recipe-details.html', context=ctx)
 
-class ReceipeIdView(View):
-    def get(self,request,id):
-        recipe = Recipe.objects.get(id=id)
-        return render(request, 'recipe-id-vote.html',context = {'id':recipe})
-
     def post(self,request,id):
 
         recipe = Recipe.objects.get(id=id)
@@ -150,5 +145,6 @@ class ReceipeIdView(View):
             recipe.save()
 
         return HttpResponseRedirect(f'/recipe/{id}')
+
 
 

@@ -44,13 +44,12 @@ class RecipeAddView(View):
         recipe_name = request.POST.get('recipe_name')
         recipe_description = request.POST.get('recipe_description')
         time_of_preparing = request.POST.get('time_of_preparing')
-        way_of_preparing = request.POST.get('way_of_preparing')
         ingredients = request.POST.get('ingredients')
         description = request.POST.get('recipe_description')
         preparation_time = request.POST.get('time_of_preparing')
         way_of_preparing = request.POST.get('way_of_preparing')
-        if all([name, ingredients, description, preparation_time, way_of_preparing]):
-            Recipe.objects.create(name=name, ingredients=ingredients, description=description,
+        if all([recipe_name, ingredients, recipe_description, time_of_preparing, way_of_preparing]):
+            Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=description,
                                   preparation_time=preparation_time, way_of_preparing=way_of_preparing)
             return redirect('/recipe/list/')
         else:
@@ -59,7 +58,7 @@ class RecipeAddView(View):
 
 
 class RecipeModifyView(View):
-    def get(self, reqest, id):
+    def get(self, request, id):
         return HttpResponse(f"Działa id:{id}")
 
 
@@ -167,6 +166,16 @@ class RecipeDetails(View):
             recipe.save()
 
         return HttpResponseRedirect(f'/recipe/{id}')
+
+
+class ContactDetailsView(View):
+    def get(self, request, *args, **kwargs):
+        contact_details = Page.objects.get(slug='contact')
+        if contact_details:
+            context = {'paragraph': contact_details.description}
+            return render(request, 'contact-details.html', context)
+        else:
+            return redirect('index-site#contact')
 
 
 

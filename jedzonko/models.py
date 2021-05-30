@@ -1,5 +1,5 @@
 from django.db import models
-
+import re
 
 class Recipe(models.Model):
     name = models.CharField(max_length=256)
@@ -12,11 +12,25 @@ class Recipe(models.Model):
     votes = models.SmallIntegerField(default=0)
 
 
+
 class Plan(models.Model):
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=2048)
     created = models.DateTimeField(auto_now_add=True)
     recipes = models.ManyToManyField(Recipe, through="RecipePlan")
+
+
+class Page(models.Model):
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    slug = models.CharField(max_length=256, unique=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            title = str(self.title)
+            title_normalized = re.sub('[łóąęńśżźć]', '', title)
+            self.slug = title_normalized.replace(" ", "-").lower()
+        super().save(*args, **kwargs)
 
 
 class Dayname(models.Model):

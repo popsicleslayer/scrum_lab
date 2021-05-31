@@ -2,7 +2,6 @@ import random
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from jedzonko.models import *
@@ -41,14 +40,14 @@ class RecipeAddView(View):
 
 
     def post(self,request):
-        name = request.POST.get('recipe_name')
+        recipe_name = request.POST.get('recipe_name')
+        recipe_description = request.POST.get('recipe_description')
+        time_of_preparing = request.POST.get('preparation_time')
         ingredients = request.POST.get('ingredients')
-        description = request.POST.get('recipe_description')
-        preparation_time = request.POST.get('preparation_time')
         way_of_preparing = request.POST.get('way_of_preparing')
-        if all([name, ingredients, description, preparation_time, way_of_preparing]):
-            Recipe.objects.create(name=name, ingredients=ingredients, description=description,
-                                  preparation_time=preparation_time, way_of_preparing=way_of_preparing)
+        if all([recipe_name, ingredients, recipe_description, time_of_preparing, way_of_preparing]):
+            Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=recipe_description,
+                                  preparation_time=time_of_preparing, way_of_preparing=way_of_preparing)
             return redirect('/recipe/list/')
         else:
             message = "Wypełnij poprawnie wszystkie pola."
@@ -208,4 +207,18 @@ class ReceipeIdView(View):
             recipe.votes = new_nr_voices
             recipe.save()
         return HttpResponseRedirect(f'/recipe/{id}')
+
+
+class ContactDetailsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            contact_details = Page.objects.get(slug='contact')
+        except Page.DoesNotExist:
+            return redirect('/#contact')
+        context = {'paragraph': contact_details.description}
+        return render(request, 'contact-details.html', context)
+
+
+
+
 

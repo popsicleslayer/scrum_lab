@@ -1,8 +1,7 @@
 import random
 from datetime import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from jedzonko.models import *
@@ -45,21 +44,14 @@ class RecipeAddView(View):
         recipe_description = request.POST.get('recipe_description')
         time_of_preparing = request.POST.get('time_of_preparing')
         ingredients = request.POST.get('ingredients')
-        description = request.POST.get('recipe_description')
-        preparation_time = request.POST.get('time_of_preparing')
         way_of_preparing = request.POST.get('way_of_preparing')
         if all([recipe_name, ingredients, recipe_description, time_of_preparing, way_of_preparing]):
-            Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=description,
-                                  preparation_time=preparation_time, way_of_preparing=way_of_preparing)
+            Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=recipe_description,
+                                  preparation_time=time_of_preparing, way_of_preparing=way_of_preparing)
             return redirect('/recipe/list/')
         else:
             message = "Wypełnij poprawnie wszystkie pola."
         return render(request, "app-add-recipe.html", {"message": message})
-
-
-class RecipeModifyView(View):
-    def get(self, request, id):
-        return HttpResponse(f"Działa id:{id}")
 
 
 class PlanIdView(View):
@@ -74,8 +66,14 @@ class PlanAddView(View):
     def post(self, request):
         planName = request.POST.get('planName')
         planDescription = request.POST.get('planDescription')
-        return HttpResponse(f'{planName}, {planDescription}')
+        if all([planName, planDescription]):
+            new = Plan.objects.create(name=planName, description=planDescription)
+            new.save()
+        else:
+            return HttpResponse("Wprowadzono niepełne dane")
 
+        response = redirect(f'/plan/{new.id}/details')
+        return response
 
 class PlanAddReceipeView(View):
     def get(self, request):
@@ -151,11 +149,48 @@ class RecipeDetails(View):
         }
         return render(request, template_name='app-recipe-details.html', context=ctx)
 
+
+class RecipeModifyView(View):
+    def get(self, request, id):
+        recipe = get_object_or_404(Recipe, pk=id)
+        name = recipe.name
+        ingredients = recipe.ingredients
+        description = recipe.description
+        preparation_time = recipe.preparation_time
+        way_of_preparing = recipe.way_of_preparing
+        ctx = {"name": name,
+               "recipe_id": id,
+               "ingredients": ingredients,
+               "description": description,
+               "preparation_time": preparation_time,
+               "way_of_preparing": way_of_preparing}
+        return render(request, "app-edit-recipe.html", ctx)
+
+    def post(self, request, id):
+        recipe = Recipe.objects.filter(pk=id)
+        name = request.POST.get('name')
+        ingredients = request.POST.get('ingredients')
+        description = request.POST.get('description')
+        preparation_time = request.POST.get('preparation_time')
+        way_of_preparing = request.POST.get('way_of_preparing')
+        if all([name, ingredients, description, preparation_time, way_of_preparing]):
+            recipe.update(name=name, ingredients=ingredients, description=description,
+                          preparation_time=preparation_time, way_of_preparing=way_of_preparing)
+            return redirect('/recipe/list/')
+        else:
+            message = "Wypełnij poprawnie wszystkie pola."
+        return render(request, "app-edit-recipe.html", {"message": message})
+
+
+class ReceipeIdView(View):
+    def get(self,request,id):
+        recipe = Recipe.objects.get(id=id)
+        return render(request, 'recipe-id-vote.html',context = {'id':recipe})
+
     def post(self,request,id):
 
         recipe = Recipe.objects.get(id=id)
         nr_voices = recipe.votes
-
         if 'like' in request.POST:
             new_nr_voices = nr_voices + 1
             recipe.votes = new_nr_voices
@@ -164,7 +199,6 @@ class RecipeDetails(View):
             new_nr_voices = nr_voices - 1
             recipe.votes = new_nr_voices
             recipe.save()
-
         return HttpResponseRedirect(f'/recipe/{id}')
 
 

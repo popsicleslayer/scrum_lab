@@ -42,7 +42,7 @@ class RecipeAddView(View):
     def post(self,request):
         recipe_name = request.POST.get('recipe_name')
         recipe_description = request.POST.get('recipe_description')
-        time_of_preparing = request.POST.get('time_of_preparing')
+        time_of_preparing = request.POST.get('preparation_time')
         ingredients = request.POST.get('ingredients')
         way_of_preparing = request.POST.get('way_of_preparing')
         if all([recipe_name, ingredients, recipe_description, time_of_preparing, way_of_preparing]):

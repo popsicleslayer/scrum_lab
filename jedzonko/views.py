@@ -63,7 +63,13 @@ class PlanIdView(View):
     def get(self, request, id):
         plan = Plan.objects.get(pk=id)
         recipePlan = RecipePlan.objects.filter(plan=plan.id)
-        return render(request,template_name='app-details-schedules.html', context={'plan': plan, 'recipePlan': recipePlan})
+        days = Dayname.objects.all()
+        for i in recipePlan:
+            lista = []
+            x = i.day_name.values_list()
+            lista.append(x)
+            return list
+        return render(request,template_name='app-details-schedules.html', context={'plan': plan, 'recipePlan': recipePlan, 'days': days, 'lista': lista})
 
 
 class PlanAddView(View):
@@ -147,7 +153,9 @@ class DashboardView(View):
 
 
 class RecipeDetails(View):
+
     def get(self, request, id):
+
         recipe = Recipe.objects.get(id=id)
         ingredients = recipe.ingredients.split(sep=', ')
         ctx = {
@@ -155,6 +163,21 @@ class RecipeDetails(View):
             'ingredients': ingredients,
         }
         return render(request, template_name='app-recipe-details.html', context=ctx)
+
+    def post(self,request,id):
+
+        recipe = Recipe.objects.get(id=id)
+        nr_voices = recipe.votes
+        if 'like' in request.POST:
+            new_nr_voices = nr_voices + 1
+            recipe.votes = new_nr_voices
+            recipe.save()
+        else:
+            new_nr_voices = nr_voices - 1
+            recipe.votes = new_nr_voices
+            recipe.save()
+
+        return redirect(f'/recipe/{id}/')
 
 
 class RecipeModifyView(View):
@@ -187,26 +210,6 @@ class RecipeModifyView(View):
         else:
             message = "Wypełnij poprawnie wszystkie pola."
         return render(request, "app-edit-recipe.html", {"message": message})
-
-
-class ReceipeIdView(View):
-    def get(self,request,id):
-        recipe = Recipe.objects.get(id=id)
-        return render(request, 'recipe-id-vote.html',context = {'id':recipe})
-
-    def post(self,request,id):
-
-        recipe = Recipe.objects.get(id=id)
-        nr_voices = recipe.votes
-        if 'like' in request.POST:
-            new_nr_voices = nr_voices + 1
-            recipe.votes = new_nr_voices
-            recipe.save()
-        elif 'dislike':
-            new_nr_voices = nr_voices - 1
-            recipe.votes = new_nr_voices
-            recipe.save()
-        return HttpResponseRedirect(f'/recipe/{id}')
 
 
 class ContactDetailsView(View):
